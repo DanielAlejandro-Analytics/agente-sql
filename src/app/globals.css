@@ -1,1 +1,41 @@
 @import "tailwindcss";
+
+/* Tema claro de la maqueta azul: cabecera azul marino, fondo gris muy claro, tarjetas blancas, acento azul. */
+:root {
+  --bg: #f3f5f8;
+  --surface: #ffffff;
+  --surface-2: #eef1f6;
+  --line: #d6dce5;
+  --text: #1b2430;
+  --muted: #586374;
+  --head: #1c2b4a;
+  --accent: #1f56c7;
+  --ok: #1d7a4c;
+  --danger: #b3261e;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-head: var(--head);
+  --color-accent: var(--accent);
+  --color-ok: var(--ok);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-plex-sans), system-ui, sans-serif;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

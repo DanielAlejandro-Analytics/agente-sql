@@ -20,25 +20,33 @@ const NOTES: Record<string, string> = {
   "vendedores.region_id": "región donde trabaja el vendedor",
 };
 
-let schemaCache: string | undefined;
-export function schemaText(): string {
-  if (schemaCache) return schemaCache;
+type Table = { name: string; cols: { name: string; type: string; fk?: string }[] };
+
+// Tablas y columnas leídas de la base; las usan el prompt y el árbol del esquema en la interfaz.
+let tablesCache: Table[] | undefined;
+export function schemaTables(): Table[] {
+  if (tablesCache) return tablesCache;
   const db = new DatabaseSync(join(process.cwd(), "data/ventas.db"), { readOnly: true });
-  const tables = db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY rowid").all() as { name: string }[];
-  schemaCache = tables
-    .map(({ name }) => {
-      const cols = db.prepare(`SELECT name, type FROM pragma_table_info(?)`).all(name) as { name: string; type: string }[];
-      const fks = db.prepare(`SELECT "from", "table" FROM pragma_foreign_key_list(?)`).all(name) as { from: string; table: string }[];
+  const names = db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY rowid").all() as { name: string }[];
+  tablesCache = names.map(({ name }) => {
+    const cols = db.prepare("SELECT name, type FROM pragma_table_info(?)").all(name) as { name: string; type: string }[];
+    const fks = db.prepare('SELECT "from", "table" FROM pragma_foreign_key_list(?)').all(name) as { from: string; table: string }[];
+    return { name, cols: cols.map((c) => ({ ...c, fk: fks.find((f) => f.from === c.name)?.table })) };
+  });
+  db.close();
+  return tablesCache;
+}
+
+export function schemaText(): string {
+  return schemaTables()
+    .map(({ name, cols }) => {
       const lines = cols.map((c) => {
-        const fk = fks.find((f) => f.from === c.name);
-        const note = NOTES[`${name}.${c.name}`] ?? (fk ? `referencia a ${fk.table}.id` : "");
+        const note = NOTES[`${name}.${c.name}`] ?? (c.fk ? `referencia a ${c.fk}.id` : "");
         return `  ${c.name} ${c.type}${note ? ` -- ${note}` : ""}`;
       });
       return `${name}(\n${lines.join(",\n")}\n)`;
     })
     .join("\n");
-  db.close();
-  return schemaCache;
 }
 
 const SYSTEM = () => `Traduces preguntas en español a SQL de SQLite sobre la base de ventas de una distribuidora chilena ficticia.
