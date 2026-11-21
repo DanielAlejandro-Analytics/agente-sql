@@ -3,6 +3,9 @@
 const cell = (v: unknown) => (typeof v === "number" ? Math.round(v * 100) / 100 : v);
 const key = (row: unknown[]) => JSON.stringify(row.map(cell));
 
+// El orden importa solo si la consulta termina ordenada: un ORDER BY sin ")" después (no el de OVER (...)).
+export const isOrdered = (sql: string) => /\border\s+by\b[^)]*$/i.test(sql);
+
 export function sameResult(got: unknown[][], want: unknown[][], ordered: boolean): boolean {
   if (got.length !== want.length) return false;
   const a = got.map(key);

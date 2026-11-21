@@ -1,7 +1,13 @@
 // Autoprueba: node --test src/lib/compare.test.ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { sameResult } from "./compare.ts";
+import { isOrdered, sameResult } from "./compare.ts";
+
+test("isOrdered: solo cuenta el ORDER BY final, no el de una ventana", () => {
+  assert.equal(isOrdered("SELECT a FROM t ORDER BY a DESC LIMIT 3"), true);
+  assert.equal(isOrdered("SELECT a FROM (SELECT a, RANK() OVER (PARTITION BY b ORDER BY c DESC) AS rk FROM t) WHERE rk = 1"), false);
+  assert.equal(isOrdered("SELECT a FROM t"), false);
+});
 
 test("sin orden: ignora el orden de las filas", () => {
   assert.equal(sameResult([[1], [2]], [[2], [1]], false), true);

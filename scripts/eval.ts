@@ -2,7 +2,7 @@
 // Uso: node --env-file=.env.local scripts/eval.ts   (~30-60 llamadas a Gemini; pedir permiso antes)
 import { writeFileSync } from "node:fs";
 import { AnswerError, ask } from "../src/lib/agent.ts";
-import { sameResult } from "../src/lib/compare.ts";
+import { isOrdered, sameResult } from "../src/lib/compare.ts";
 import { EVAL_CASES } from "../src/lib/eval-cases.ts";
 import { modelOf } from "../src/lib/llm.ts";
 import { runSql, SqlTimeoutError } from "../src/lib/sql.ts";
@@ -13,7 +13,7 @@ const MAX_ROWS = 10000;
 const cases = [];
 for (const c of EVAL_CASES) {
   const ref = await runSql(c.sql, { maxRows: MAX_ROWS });
-  const ordered = /\border\s+by\b/i.test(c.sql);
+  const ordered = isOrdered(c.sql);
   try {
     const got = await ask(c.question, { maxRows: MAX_ROWS, explain: false });
     // got.rows viene recortado a lo que se muestra; se vuelve a ejecutar completo (local, sin gastar cuota).
