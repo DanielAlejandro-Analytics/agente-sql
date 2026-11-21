@@ -80,8 +80,8 @@ export type AskResult = {
 
 type Gen = (o: { provider: "gemini"; system: string; prompt: string }) => Promise<string>;
 
-export async function ask(question: string, opts: { gen?: Gen; maxRows?: number } = {}): Promise<AskResult> {
-  const { gen = generate, maxRows = 200 } = opts;
+export async function ask(question: string, opts: { gen?: Gen; maxRows?: number; explain?: boolean } = {}): Promise<AskResult> {
+  const { gen = generate, maxRows = 200, explain: withExplanation = true } = opts;
   const system = SYSTEM();
   let prompt = `Pregunta: ${question}`;
   let lastError = "";
@@ -98,7 +98,11 @@ export async function ask(question: string, opts: { gen?: Gen; maxRows?: number 
     } else {
       try {
         const result = await runSql(sql, { maxRows });
-        const explanation = result.rows.length ? await explain(gen, question, sql, result) : "La consulta no devolvió resultados.";
+        const explanation = !result.rows.length
+          ? "La consulta no devolvió resultados."
+          : withExplanation
+            ? await explain(gen, question, sql, result)
+            : "";
         return {
           sql,
           columns: result.columns,

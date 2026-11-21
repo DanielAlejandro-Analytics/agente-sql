@@ -36,6 +36,14 @@ test("camino feliz", async () => {
   assert.equal(calls.length, 2);
 });
 
+test("sin explicación (para el eval): una sola llamada", async () => {
+  const { gen, calls } = fake("SELECT COUNT(*) FROM regiones");
+  const r = await ask("¿Cuántas regiones hay?", { gen, explain: false });
+  assert.deepEqual(r.rows, [[16]]);
+  assert.equal(r.explanation, "");
+  assert.equal(calls.length, 1);
+});
+
 test("corrige una vez con el error", async () => {
   const { gen, calls } = fake("SELECT nombre FROM clientes_x", "SELECT COUNT(*) FROM clientes", "Hay 300 clientes.");
   const r = await ask("¿Cuántos clientes hay?", { gen });
