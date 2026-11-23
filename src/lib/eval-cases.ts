@@ -1,5 +1,5 @@
 // Preguntas del eval con su SQL de referencia, escritas a mano antes de correr el modelo.
-// No se cambian después de ver los resultados; si alguna se corrige, se documenta en el NOW del proyecto.
+// No se cambian después de ver los resultados; si alguna se corrige, queda explicado en el commit.
 // Cada pregunta dice qué columnas mostrar, porque la comparación es estricta (columnas de más = incorrecta).
 export type EvalCase = { id: string; question: string; level: "facil" | "media" | "dificil"; sql: string };
 

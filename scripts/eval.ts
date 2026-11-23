@@ -1,5 +1,5 @@
 // Eval por ejecución: corre las 30 preguntas por el agente y compara con la referencia.
-// Uso: node --env-file=.env.local scripts/eval.ts   (~30-60 llamadas a Gemini; pedir permiso antes)
+// Uso: node --env-file=.env.local scripts/eval.ts   (~30-60 llamadas a Gemini)
 import { writeFileSync } from "node:fs";
 import { AnswerError, ask } from "../src/lib/agent.ts";
 import { isOrdered, sameResult } from "../src/lib/compare.ts";
