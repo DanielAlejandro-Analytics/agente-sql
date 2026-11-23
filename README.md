@@ -1,5 +1,9 @@
 # Agente SQL
 
+Demo: https://agente-sql.vercel.app
+
+![Agente de consultas SQL en lenguaje natural](./docs/preview.png)
+
 Escribes una pregunta en español sobre las ventas de una distribuidora y el agente la convierte en SQL, la ejecuta y explica el resultado en una o dos frases. Los datos son **ficticios**: una base SQLite generada con semilla fija (300 clientes, ~4.500 ventas de 2024 y 2025).
 
 ## Cómo funciona
