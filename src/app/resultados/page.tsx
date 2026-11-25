@@ -8,7 +8,7 @@ const LEVEL = { facil: "Fácil", media: "Media", dificil: "Difícil" } as Record
 
 export default function Resultados() {
   // Los fallidos primero: son lo más interesante de leer.
-  const cases = [...evalData.cases].sort((a, b) => Number(a.ok) - Number(b.ok));
+  const cases = evalData.cases.toSorted((a, b) => Number(a.ok) - Number(b.ok));
   return (
     <>
       <h1 className="text-xl font-semibold">Resultados de la evaluación</h1>

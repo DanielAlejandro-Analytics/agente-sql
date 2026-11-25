@@ -121,13 +121,15 @@ function Result({ r }: { r: AskResult }) {
       </div>
       <div className="min-w-0 space-y-3">
         {r.rows.length > 0 && (
-          <div className="overflow-x-auto rounded-md border border-line">
+          // tabIndex + region: keyboard users can scroll a table wider than the panel.
+          <div tabIndex={0} role="region" aria-labelledby="result-caption" className="overflow-x-auto rounded-md border border-line">
             <table className="w-full text-sm tabular-nums">
+              <caption id="result-caption" className="sr-only">Filas devueltas por el SQL</caption>
               <thead className="bg-surface-2 text-left">
                 <tr>
-                  <th className="w-10 px-3 py-2 font-medium text-muted">#</th>
+                  <th scope="col" className="w-10 px-3 py-2 font-medium text-muted">#</th>
                   {r.columns.map((c, i) => (
-                    <th key={i} className={`px-3 py-2 font-medium ${typeof r.rows[0][i] === "number" ? "text-right" : ""}`}>
+                    <th key={i} scope="col" className={`px-3 py-2 font-medium ${typeof r.rows[0][i] === "number" ? "text-right" : ""}`}>
                       {c}
                     </th>
                   ))}
